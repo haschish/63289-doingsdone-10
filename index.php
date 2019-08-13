@@ -10,6 +10,16 @@ $tasks = [
     ['name' => 'Купить корм для кота', 'date' => null, 'category' => 'Домашние дела', 'done' => false],
     ['name' => 'Заказать пиццу', 'date' => null, 'category' => 'Домашние дела', 'done' => false],
 ];
+
+function countCategory($tasks, $category) {
+    $count = 0;
+    foreach($tasks as $task) {
+        if ($task['category'] == $category) {
+            $count++;
+        }
+    }
+    return $count;
+};
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -54,7 +64,7 @@ $tasks = [
                     <?php foreach ($projects as $project): ?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?=$project?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <span class="main-navigation__list-item-count"><?=countCategory($tasks, $project)?></span>
                         </li>
                     <?php endforeach; ?>
                     </ul>
@@ -93,13 +103,11 @@ $tasks = [
                         if ($show_complete_tasks == 0 && $task['done']) {
                             continue;
                         }
-                        $taskCompleted = $task['done'] ? 'task--completed' : '';
-                        $checked = $task['done'] ? 'checked' : '';
                     ?>
-                        <tr class="tasks__item task <?=$taskCompleted?>">
+                        <tr class="tasks__item task <?=$task['done'] ? 'task--completed' : ''?>">
                             <td class="task__select">
                                 <label class="checkbox task__checkbox">
-                                    <input class="checkbox__input visually-hidden" type="checkbox" <?=$checked?>>
+                                    <input class="checkbox__input visually-hidden" type="checkbox" <?=$task['done'] ? 'checked' : ''?>>
                                     <span class="checkbox__text"><?=$task['name']?></span>
                                 </label>
                             </td>
