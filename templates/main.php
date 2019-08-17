@@ -1,15 +1,3 @@
-<?php
-function countCategory($tasks, $category) {
-    $count = 0;
-    foreach($tasks as $task) {
-        if ($task['category'] == $category) {
-            $count++;
-        }
-    }
-    return $count;
-};
-?>
-
 <section class="content__side">
     <h2 class="content__side-heading">Проекты</h2>
 
