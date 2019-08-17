@@ -45,8 +45,16 @@
             if ($show_complete_tasks == 0 && $task['done']) {
                 continue;
             }
+
+            $statuses = [];
+            if ($task['done']) {
+                array_push($statuses, 'task--completed');
+            }
+            if ( $task['date'] && is_less_than_24_hours_left($task['date']) && !$task['done']) {
+                array_push($statuses, 'task--important');
+            }
         ?>
-            <tr class="tasks__item task <?=$task['done'] ? 'task--completed' : ''?>">
+            <tr class="tasks__item task <?=implode(" ", $statuses)?>">
                 <td class="task__select">
                     <label class="checkbox task__checkbox">
                         <input class="checkbox__input visually-hidden" type="checkbox" <?=$task['done'] ? 'checked' : ''?>>
