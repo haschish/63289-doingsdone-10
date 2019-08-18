@@ -48,10 +48,10 @@
 
             $statuses = [];
             if ($task['done']) {
-                array_push($statuses, 'task--completed');
+                $statuses[] = 'task--completed';
             }
-            if ( $task['date'] && is_less_than_24_hours_left($task['date']) && !$task['done']) {
-                array_push($statuses, 'task--important');
+            if ( $task['date'] && isLessThan24HoursLeft($task['date']) && !$task['done']) {
+                $statuses[] = 'task--important';
             }
         ?>
             <tr class="tasks__item task <?=implode(" ", $statuses)?>">

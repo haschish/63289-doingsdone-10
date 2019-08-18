@@ -24,7 +24,7 @@ function countCategory($tasks, $category) {
  *
  * @return boolean true если от $date до текущего системного времени осталось меньше чем 24 часа, иначе false
  */
-function is_less_than_24_hours_left(string $date) {
+function isLessThan24HoursLeft(string $date) {
     $timestamp = strtotime($date);
     return $timestamp - time() <= 24 * 60 * 60;
 };
