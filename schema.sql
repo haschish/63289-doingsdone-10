@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `project_id` int(11) unsigned DEFAULT NULL,
   `name` varchar(256) NOT NULL DEFAULT '',
   `file` varchar(256) DEFAULT NULL,
-  `date` date NOT NULL,
+  `date` date DEFAULT NULL,
   `done` tinyint(1) NOT NULL DEFAULT '0',
   `dt_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `user_id` (`user_id`),
