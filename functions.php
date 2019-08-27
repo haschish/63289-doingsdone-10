@@ -32,32 +32,32 @@ function isLessThan24HoursLeft(string $date) {
 /**
  * Возвращает массив найденых категорий
  *
- * @param object $link объект представляющий подключение к серверу MySQL
+ * @param mysqli $link объект представляющий подключение к серверу MySQL
  * @param int $user_id идентификатор пользователя
  *
  * @return array $projects массив найденых категорий
  */
-function getProjects(object $link, int $user_id) {
+function getProjects(mysqli $link, int $user_id) {
     $sql = "
         SELECT p.id, p.name, IF (pc.count IS NULL, 0, pc.count) AS count FROM projects AS p
         LEFT JOIN (SELECT count(id) AS `count`, project_id FROM tasks WHERE user_id = $user_id GROUP BY project_id) AS pc ON (p.id = pc.project_id)
         WHERE p.user_id = $user_id;
     ";
     $result = mysqli_query($link, $sql);
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return ($result) ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
 };
 
 /**
  * Возвращает массив найденых задач
  *
- * @param object $link объект представляющий подключение к серверу MySQL
+ * @param mysqli $link объект представляющий подключение к серверу MySQL
  * @param int $user_id идентификатор пользователя
  *
  * @return array $tasks массив найденых задач
  */
-function getTasks(object $link, int $user_id) {
+function getTasks(mysqli $link, int $user_id) {
     $sql = "SELECT * FROM tasks WHERE user_id = $user_id;";
     $result = mysqli_query($link, $sql);
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return ($result) ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
 };
 ?>
