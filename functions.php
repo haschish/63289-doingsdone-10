@@ -26,14 +26,7 @@ function countCategory($tasks, $category) {
  * @return boolean
  */
 function hasCategory($categories, $id) {
-    $has = false;
-    foreach($categories as $category) {
-        if ($category['id'] == $id) {
-            $has = true;
-            break;
-        }
-    }
-    return $has;
+    return in_array($id, array_column($categories, 'id'));
 };
 
 /**
@@ -74,7 +67,7 @@ function getProjects(mysqli $link, int $user_id) {
  *
  * @return array $tasks массив найденых задач
  */
-function getTasks(mysqli $link, int $user_id, int $category_id = NULL) {
+function getTasks(mysqli $link, int $user_id, int $category_id = null) {
     $categoryCondition = ($category_id) ? "project_id = $category_id" : "1=1";
     $sql = "SELECT * FROM tasks WHERE user_id = $user_id AND $categoryCondition;";
     $result = mysqli_query($link, $sql);

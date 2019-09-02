@@ -10,7 +10,7 @@ if (!$dbLink) {
     $content = include_template('error.php', ['message' => mysqli_connect_error()]);
 } else {
     $projects = getProjects($dbLink, 1);
-    $category_id = (isset($_GET['category'])) ? (int)$_GET['category'] : NULL;
+    $category_id = (isset($_GET['category'])) ? (int)$_GET['category'] : null;
 
     if ($category_id && !hasCategory($projects, $category_id)) {
         header("HTTP/1.x 404 Not Found");
