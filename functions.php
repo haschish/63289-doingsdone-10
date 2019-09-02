@@ -18,6 +18,18 @@ function countCategory($tasks, $category) {
 };
 
 /**
+ * проверяет, существует ли в списке категория с идентификатором $id
+ *
+ * @param array $categories массив категорий
+ * @param string $id идентификатор категории
+ *
+ * @return boolean
+ */
+function hasCategory($categories, $id) {
+    return in_array($id, array_column($categories, 'id'));
+};
+
+/**
  * Проверяет, что переданная дата меньше текущего системного времени на 24 часа
  *
  * @param string $date дата в формате 'ДД.ММ.ГГГГ'
@@ -55,8 +67,9 @@ function getProjects(mysqli $link, int $user_id) {
  *
  * @return array $tasks массив найденых задач
  */
-function getTasks(mysqli $link, int $user_id) {
-    $sql = "SELECT * FROM tasks WHERE user_id = $user_id;";
+function getTasks(mysqli $link, int $user_id, int $category_id = null) {
+    $categoryCondition = ($category_id) ? "project_id = $category_id" : "1=1";
+    $sql = "SELECT * FROM tasks WHERE user_id = $user_id AND $categoryCondition;";
     $result = mysqli_query($link, $sql);
     return ($result) ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
 };
