@@ -18,7 +18,8 @@ if (!$dbLink) {
     }
 
     $tasks = getTasks($dbLink, 1, $category_id);
-    $content = include_template('main.php', ['tasks' => $tasks, 'projects' => $projects, 'show_complete_tasks' => $show_complete_tasks, 'category_id' => $category_id]);
+    $categories_side = include_template('categories-side.php', ['projects' => $projects, 'category_id' => $category_id]);
+    $content = include_template('main.php', ['tasks' => $tasks, 'categories_side' => $categories_side, 'show_complete_tasks' => $show_complete_tasks]);
 }
 
 $result = include_template('layout.php', ['title' => 'Дела в порядке', 'content' => $content]);
