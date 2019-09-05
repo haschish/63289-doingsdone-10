@@ -33,16 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $errors = array_filter($errors);
 
-    $filename = null;
-    if (isset($_FILES['file']['name'])) {
-        $tmp_name = $_FILES['file']['tmp_name'];
-        $nameArr = explode('.', $_FILES['file']['name']);
-        $extension = $nameArr[count($nameArr) - 1];
-        $filename = uniqid() . '.' . $extension;
-    }
-
     if (count($errors) == 0) {
-        move_uploaded_file($tmp_name, 'uploads/' . $filename);
+        $filename = null;
+        if (!empty($_FILES['file']['name'])) {
+            $tmp_name = $_FILES['file']['tmp_name'];
+            $nameArr = explode('.', $_FILES['file']['name']);
+            $extension = $nameArr[count($nameArr) - 1];
+            $filename = uniqid() . '.' . $extension;
+            move_uploaded_file($tmp_name, 'uploads/' . $filename);
+        }
 
         insertTask($dbLink, [
             'user_id' => 1, //TODO

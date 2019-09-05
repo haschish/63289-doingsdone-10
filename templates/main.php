@@ -47,6 +47,11 @@
                         <span class="checkbox__text"><?=strip_tags($task['name'])?></span>
                     </label>
                 </td>
+                <td class="task__file">
+                    <?php if ($task['file']): ?>
+                        <a href="uploads/<?= $task['file'] ?>" class="download-link"></a>
+                    <?php endif; ?>
+                </td>
                 <td class="task__date"><?=strip_tags($task['date'])?></td>
                 <td class="task__controls"></td>
             </tr>
