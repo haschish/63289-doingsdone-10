@@ -149,10 +149,6 @@ function getPostValue($name = null) {
     return $_POST[$name] ?? '';
 };
 
-function emptyStringToNull($value) {
-    return $value == '' ? null : $value;
-}
-
 function printErrorAndExit(string $message = '') {
     $content = include_template('error.php', ['message' => $message]);
     printLayoutAndExit($content);
@@ -188,6 +184,8 @@ function validateCategory($name, $allowed_list) {
 function validateDate($name) {
     if (!preg_match("/^\d{4}\-\d{2}-\d{2}$/", $_POST[$name])) {
         return "Это поле должно быть датой в формате «ГГГГ-ММ-ДД»";
+    } else if (strtotime($_POST['date']) < strtotime('today')) {
+        return "Дата должна быть больше или равна текущей";
     }
 
     return null;

@@ -1,4 +1,5 @@
 <?php
+require_once('./init.php');
 require_once('./helpers.php');
 require_once('./functions.php');
 require_once('./db-init.php');
@@ -48,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'project_id' => $_POST['project'],
             'name' => $_POST['name'],
             'file' => $filename,
-            'date' => emptyStringToNull($_POST['date'])
+            'date' => $_POST['date'] ?: null
         ]);
         redirect('index.php');
 	}
