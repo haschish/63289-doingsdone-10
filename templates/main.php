@@ -1,24 +1,5 @@
 <section class="content__side">
-    <h2 class="content__side-heading">Проекты</h2>
-
-    <nav class="main-navigation">
-        <ul class="main-navigation__list">
-        <?php foreach ($projects as $project):?>
-            <?php
-            $url = $_SERVER['PHP_SELF'] . '?' . http_build_query(['category' => $project['id']]);
-            $active_class = ($project['id'] == $category_id) ? 'main-navigation__list-item--active' : '';
-            ?>
-
-            <li class="main-navigation__list-item <?=$active_class?>">
-                <a class="main-navigation__list-item-link" href="<?=$url?>"><?=strip_tags($project['name'])?></a>
-                <span class="main-navigation__list-item-count"><?=$project['count']?></span>
-            </li>
-        <?php endforeach; ?>
-        </ul>
-    </nav>
-
-    <a class="button button--transparent button--plus content__side-button"
-        href="pages/form-project.html" target="project_add">Добавить проект</a>
+    <?=$categories_side?>
 </section>
 
 <main class="content__main">
@@ -65,6 +46,11 @@
                         <input class="checkbox__input visually-hidden" type="checkbox" <?=$task['done'] ? 'checked' : ''?>>
                         <span class="checkbox__text"><?=strip_tags($task['name'])?></span>
                     </label>
+                </td>
+                <td class="task__file">
+                    <?php if ($task['file']): ?>
+                        <a href="uploads/<?= $task['file'] ?>" class="download-link"></a>
+                    <?php endif; ?>
                 </td>
                 <td class="task__date"><?=strip_tags($task['date'])?></td>
                 <td class="task__controls"></td>
