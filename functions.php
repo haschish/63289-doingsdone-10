@@ -138,8 +138,8 @@ function insertTask(mysqli $link, array $task) {
     return mysqli_stmt_insert_id($stmt);
 };
 
-function findUserByEmail(mysqli $link, string $email) {
-    $sql = "SELECT * FROM users WHERE email = '$email'";
+function findUserByEmail(mysqli $link, string $email, string $columns = '*') {
+    $sql = "SELECT $columns FROM users WHERE email = '$email'";
     $result = mysqli_query($link, $sql);
     if (!$result) {
         printErrorAndExit(mysqli_error($link));
@@ -216,6 +216,14 @@ function validateDate($name) {
 function validateEmail($name) {
     if (!filter_var($_POST[$name], FILTER_VALIDATE_EMAIL)) {
         return 'E-mail введён некорректно';
+    }
+    return null;
+}
+
+function validateUniqueEmail($dbLink, $email) {
+    $user = findUserByEmail($dbLink, $email, 'id');
+    if ($user) {
+        return 'Указанный email уже используется другим пользователем';
     }
     return null;
 }

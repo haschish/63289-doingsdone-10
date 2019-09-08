@@ -10,14 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $rules = [
         'email' => function() use ($dbLink) {
-            $error = validateEmail('email');
-            if ($error) {
-                return $error;
-            }
-            $user = findUserByEmail($dbLink, $_POST['email']);
-            if ($user) {
-                return 'Указанный email уже используется другим пользователем';
-            }
+            return validateEmail('email')
+                ?? validateUniqueEmail($dbLink, $_POST['email']);
         },
         'password' => function() {
             return validateFilled('password');
