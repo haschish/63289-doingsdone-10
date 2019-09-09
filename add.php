@@ -4,7 +4,12 @@ require_once('./helpers.php');
 require_once('./functions.php');
 require_once('./db-init.php');
 
-$projects = getProjects($dbLink, 1);
+$user = $_SESSION['user'];
+if (!$user) {
+    redirect('index.php');
+}
+
+$projects = getProjects($dbLink, $user['id']);
 $categories_side = include_template('categories-side.php', ['projects' => $projects, 'category_id' => null]);
 $errors = [];
 
@@ -45,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         insertTask($dbLink, [
-            'user_id' => 1, //TODO
+            'user_id' => $user['id'],
             'project_id' => $_POST['project'],
             'name' => $_POST['name'],
             'file' => $filename,
