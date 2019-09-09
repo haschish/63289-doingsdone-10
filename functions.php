@@ -187,7 +187,7 @@ function redirect(string $url = 'index.php') {
     exit;
 }
 
-function validateFilled($name) {
+function validateFilled($name): ?string {
     if (empty($_POST[$name])) {
         return "Это поле должно быть заполнено";
     }
@@ -195,7 +195,7 @@ function validateFilled($name) {
     return null;
 }
 
-function validateCategory($name, $allowed_list) {
+function validateCategory(string $name, array $allowed_list): ?string {
     if (!in_array($_POST[$name], $allowed_list)) {
         return "Указана несуществующая категория";
     }
@@ -203,7 +203,7 @@ function validateCategory($name, $allowed_list) {
     return null;
 }
 
-function validateDate($name) {
+function validateDate(string $name): ?string {
     if (!preg_match("/^\d{4}\-\d{2}-\d{2}$/", $_POST[$name])) {
         return "Это поле должно быть датой в формате «ГГГГ-ММ-ДД»";
     } else if (strtotime($_POST['date']) < strtotime('today')) {
@@ -213,14 +213,14 @@ function validateDate($name) {
     return null;
 }
 
-function validateEmail($name) {
+function validateEmail(string $name): ?string {
     if (!filter_var($_POST[$name], FILTER_VALIDATE_EMAIL)) {
         return 'E-mail введён некорректно';
     }
     return null;
 }
 
-function validateUniqueEmail($dbLink, $email) {
+function validateUniqueEmail(mysqli $dbLink, string $email): ?string {
     $user = findUserByEmail($dbLink, $email, 'id');
     if ($user) {
         return 'Указанный email уже используется другим пользователем';
