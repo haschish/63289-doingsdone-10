@@ -177,7 +177,8 @@ function printErrorAndExit(string $message = '') {
 }
 
 function printLayoutAndExit(string $content = '', string $title = 'Дела в порядке') {
-    $result = include_template('layout.php', ['title' => $title, 'content' => $content]);
+    $header = include_template('main-header__side.php', ['user' => $_SESSION['user']]);
+    $result = include_template('layout.php', ['title' => $title, 'content' => $content, 'header' => $header, 'user' => $_SESSION['user']]);
     print($result);
     exit;
 }
@@ -226,6 +227,10 @@ function validateUniqueEmail(mysqli $dbLink, string $email): ?string {
         return 'Указанный email уже используется другим пользователем';
     }
     return null;
+}
+
+function isIndexGuest() {
+    return preg_match("/index.php$/", $_SERVER['PHP_SELF']) && !$_SESSION['user'];
 }
 
 ?>

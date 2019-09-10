@@ -7,10 +7,10 @@ require_once('./db-init.php');
 // показывать или нет выполненные задачи
 $show_complete_tasks = rand(0, 1);
 
-if (!$dbLink) {
-    $content = include_template('error.php', ['message' => mysqli_connect_error()]);
-} else {
-    $projects = getProjects($dbLink, 1);
+$user = $_SESSION['user'];
+
+if ($user) {
+    $projects = getProjects($dbLink, $user['id']);
     $category_id = (isset($_GET['category'])) ? (int)$_GET['category'] : null;
 
     if ($category_id && !hasCategory($projects, $category_id)) {
@@ -18,11 +18,12 @@ if (!$dbLink) {
         exit();
     }
 
-    $tasks = getTasks($dbLink, 1, $category_id);
+    $tasks = getTasks($dbLink, $user['id'], $category_id);
     $categories_side = include_template('categories-side.php', ['projects' => $projects, 'category_id' => $category_id]);
     $content = include_template('main.php', ['tasks' => $tasks, 'categories_side' => $categories_side, 'show_complete_tasks' => $show_complete_tasks]);
+} else {
+    $content = include_template('guest.php');
 }
 
-$result = include_template('layout.php', ['title' => 'Дела в порядке', 'content' => $content]);
-print($result);
+printLayoutAndExit($content);
 ?>
