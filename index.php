@@ -17,8 +17,7 @@ if ($user) {
         header("HTTP/1.x 404 Not Found");
         exit();
     }
-
-    $tasks = getTasks($dbLink, $user['id'], $category_id);
+    $tasks = getTasks($dbLink, $user['id'], $category_id, getGetValue('search'));
     $categories_side = include_template('categories-side.php', ['projects' => $projects, 'category_id' => $category_id]);
     $content = include_template('main.php', ['tasks' => $tasks, 'categories_side' => $categories_side, 'show_complete_tasks' => $show_complete_tasks]);
 } else {

@@ -5,8 +5,8 @@
 <main class="content__main">
     <h2 class="content__main-heading">Список задач</h2>
 
-    <form class="search-form" action="index.php" method="post" autocomplete="off">
-        <input class="search-form__input" type="text" name="" value="" placeholder="Поиск по задачам">
+    <form class="search-form" action="index.php" method="GET" autocomplete="off">
+        <input class="search-form__input" type="text" name="search" value="<?= getGetValue('search'); ?>" placeholder="Поиск по задачам">
 
         <input class="search-form__submit" type="submit" name="" value="Искать">
     </form>
@@ -26,35 +26,40 @@
         </label>
     </div>
 
-    <table class="tasks">
-        <?php foreach ($tasks as $task):
-            if ($show_complete_tasks == 0 && $task['done']) {
-                continue;
-            }
+    <?php if (empty($tasks)): ?>
+        <p>Ничего не найдено по вашему запросу</p>
+    <?php else: ?>
+        <table class="tasks">
+            <?php foreach ($tasks as $task):
+                if ($show_complete_tasks == 0 && $task['done']) {
+                    continue;
+                }
 
-            $statuses = [];
-            if ($task['done']) {
-                $statuses[] = 'task--completed';
-            }
-            if ( $task['date'] && isLessThan24HoursLeft($task['date']) && !$task['done']) {
-                $statuses[] = 'task--important';
-            }
-        ?>
-            <tr class="tasks__item task <?=implode(" ", $statuses)?>">
-                <td class="task__select">
-                    <label class="checkbox task__checkbox">
-                        <input class="checkbox__input visually-hidden" type="checkbox" <?=$task['done'] ? 'checked' : ''?>>
-                        <span class="checkbox__text"><?=strip_tags($task['name'])?></span>
-                    </label>
-                </td>
-                <td class="task__file">
-                    <?php if ($task['file']): ?>
-                        <a href="uploads/<?= $task['file'] ?>" class="download-link"></a>
-                    <?php endif; ?>
-                </td>
-                <td class="task__date"><?=strip_tags($task['date'])?></td>
-                <td class="task__controls"></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+                $statuses = [];
+                if ($task['done']) {
+                    $statuses[] = 'task--completed';
+                }
+                if ( $task['date'] && isLessThan24HoursLeft($task['date']) && !$task['done']) {
+                    $statuses[] = 'task--important';
+                }
+            ?>
+                <tr class="tasks__item task <?=implode(" ", $statuses)?>">
+                    <td class="task__select">
+                        <label class="checkbox task__checkbox">
+                            <input class="checkbox__input visually-hidden" type="checkbox" <?=$task['done'] ? 'checked' : ''?>>
+                            <span class="checkbox__text"><?=strip_tags($task['name'])?></span>
+                        </label>
+                    </td>
+                    <td class="task__file">
+                        <?php if ($task['file']): ?>
+                            <a href="uploads/<?= $task['file'] ?>" class="download-link"></a>
+                        <?php endif; ?>
+                    </td>
+                    <td class="task__date"><?=strip_tags($task['date'])?></td>
+                    <td class="task__controls"></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
+
 </main>

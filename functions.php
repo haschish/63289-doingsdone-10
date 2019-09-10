@@ -111,9 +111,12 @@ function getProjects(mysqli $link, int $user_id) {
  *
  * @return array $tasks массив найденых задач
  */
-function getTasks(mysqli $link, int $user_id, int $category_id = null) {
-    $categoryCondition = ($category_id) ? "project_id = $category_id" : "1=1";
-    $sql = "SELECT * FROM tasks WHERE user_id = $user_id AND $categoryCondition;";
+function getTasks(mysqli $link, int $user_id, int $category_id = null, string $search) {
+    $search = mysqli_real_escape_string($link, $search);
+    $categoryCondition = ($category_id) ? "AND project_id = $category_id" : '';
+    $searchCondition = $search ? "AND MATCH (name) AGAINST ('$search')" : '';
+
+    $sql = "SELECT * FROM tasks WHERE user_id = $user_id $categoryCondition $searchCondition;";
     $result = mysqli_query($link, $sql);
     return ($result) ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
 };
@@ -170,6 +173,10 @@ function insertUser(mysqli $link, array $user) {
 function getPostValue($name = null) {
     return $_POST[$name] ?? '';
 };
+
+function getGetValue(string $name = ''): string {
+    return $_GET[$name] ?? '';
+}
 
 function printErrorAndExit(string $message = '') {
     $content = include_template('error.php', ['message' => $message]);
