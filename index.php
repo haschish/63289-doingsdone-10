@@ -5,8 +5,8 @@ require_once('./functions.php');
 require_once('./db-init.php');
 
 // показывать или нет выполненные задачи
-$show_complete_tasks = rand(0, 1);
-
+$show_completed = getShowCompleted();
+$_SESSION['show_completed'] = $show_completed;
 $user = $_SESSION['user'];
 
 if ($user) {
@@ -17,12 +17,14 @@ if ($user) {
         header("HTTP/1.x 404 Not Found");
         exit();
     }
-    $tasks = getTasks($dbLink, $user['id'], $category_id, getGetValue('search'));
+
+    $tasks = getTasks($dbLink, $user['id'], $category_id, getFilterValue(), getGetValue('search'));
     $categories_side = include_template('categories-side.php', ['projects' => $projects, 'category_id' => $category_id]);
-    $content = include_template('main.php', ['tasks' => $tasks, 'categories_side' => $categories_side, 'show_complete_tasks' => $show_complete_tasks]);
+    $content = include_template('main.php', ['tasks' => $tasks, 'categories_side' => $categories_side, 'show_complete_tasks' => $show_completed]);
 } else {
     $content = include_template('guest.php');
 }
 
 printLayoutAndExit($content);
+
 ?>
