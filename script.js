@@ -9,9 +9,24 @@ if ($checkbox.length) {
     var searchParams = new URLSearchParams(window.location.search);
     searchParams.set('show_completed', is_checked);
 
-    window.location = '/index.php?' + searchParams.toString();
+    window.location = 'index.php?' + searchParams.toString();
   });
 }
+
+
+var onTaskCheckboxChange = function(evt) {
+  var checkbox = evt.target;
+  var searchParams = new URLSearchParams(window.location.search);
+  searchParams.set('done', checkbox.checked);
+  searchParams.set('id', checkbox.dataset.taskId);
+
+  window.location = 'task-done.php?' + searchParams.toString();
+};
+
+var checkboxesTasks = document.querySelectorAll('.tasks .checkbox__input');
+checkboxesTasks.forEach(function(item) {
+  item.addEventListener('change', onTaskCheckboxChange);
+});
 
 flatpickr('#date', {
   enableTime: false,

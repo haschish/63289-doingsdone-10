@@ -103,6 +103,18 @@ function getProjects(mysqli $link, int $user_id) {
     return ($result) ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
 };
 
+function insertProject(mysqli $link, array $project) {
+    $sql = 'INSERT INTO projects (user_id, name) VALUES (?, ?)';
+    $stmt = mysqli_prepare($link, $sql);
+    mysqli_stmt_bind_param($stmt, 'ss', $project['user_id'], $project['name']);
+    mysqli_stmt_execute($stmt);
+    if (mysqli_stmt_errno($stmt)) {
+        printErrorAndExit(mysqli_stmt_error($stmt));
+    }
+
+    return mysqli_stmt_insert_id($stmt);
+}
+
 /**
  * Возвращает массив найденых задач
  *
@@ -111,15 +123,22 @@ function getProjects(mysqli $link, int $user_id) {
  *
  * @return array $tasks массив найденых задач
  */
-function getTasks(mysqli $link, int $user_id, int $category_id = null, string $search) {
+function getTasks(mysqli $link, int $user_id, int $category_id = null, string $filter, string $search) {
+    $filterCondition = '';
+    switch($filter) {
+        case 'today': $filterCondition = "AND date = CURDATE()"; break;
+        case 'tomorrow': $filterCondition = "AND date = DATE_ADD(CURDATE(), INTERVAL 1 DAY)"; break;
+        case 'overdue': $filterCondition = "AND date < CURDATE()"; break;
+    }
+
     $search = mysqli_real_escape_string($link, $search);
     $categoryCondition = ($category_id) ? "AND project_id = $category_id" : '';
     $searchCondition = $search ? "AND MATCH (name) AGAINST ('$search')" : '';
 
-    $sql = "SELECT * FROM tasks WHERE user_id = $user_id $categoryCondition $searchCondition;";
+    $sql = "SELECT * FROM tasks WHERE user_id = $user_id $filterCondition $categoryCondition $searchCondition;";
     $result = mysqli_query($link, $sql);
     return ($result) ? mysqli_fetch_all($result, MYSQLI_ASSOC) : [];
-};
+}
 
 /**
  * Вставляет задачу в базу
@@ -178,6 +197,18 @@ function getGetValue(string $name = ''): string {
     return $_GET[$name] ?? '';
 }
 
+function getShowCompleted() {
+    if (isset($_GET['show_completed'])) {
+        return $_GET['show_completed'] == '1' ? 1 : 0;
+    } else {
+        return $_SESSION['show_completed'] ?? 0;
+    }
+}
+
+function getFilterValue() {
+    return $_GET['filter'] ?? 'all';
+}
+
 function printErrorAndExit(string $message = '') {
     $content = include_template('error.php', ['message' => $message]);
     printLayoutAndExit($content);
@@ -206,6 +237,14 @@ function validateFilled($name): ?string {
 function validateCategory(string $name, array $allowed_list): ?string {
     if (!in_array($_POST[$name], $allowed_list)) {
         return "Указана несуществующая категория";
+    }
+
+    return null;
+}
+
+function validateNotExist(string $needle, array $list): ?string {
+    if (in_array($needle, $list)) {
+        return "Такое название уже существует";
     }
 
     return null;

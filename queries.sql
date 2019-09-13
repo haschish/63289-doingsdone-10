@@ -5,11 +5,11 @@ INSERT INTO users (id, name, email, password) VALUES
   (2, 'test2', 'test2@test.com', 'pass');
 
 INSERT INTO projects (id, user_id, name) VALUES
-  (1, 1, 'Входящие'),
-  (2, 1, 'Учеба'),
-  (3, 1, 'Работа'),
-  (4, 1, 'Домашние дела'),
-  (5, 1, 'Авто');
+  (1, 1, 'входящие'),
+  (2, 1, 'учеба'),
+  (3, 1, 'работа'),
+  (4, 1, 'домашние дела'),
+  (5, 1, 'авто');
 
 INSERT INTO tasks (id, user_id, project_id, name, file, date, done) VALUES
   (1, 1, 3, 'Собеседование в IT компании', NULL, '2019-08-18', 0),
