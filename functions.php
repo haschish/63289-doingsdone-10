@@ -279,4 +279,12 @@ function isIndexGuest() {
     return preg_match("/index.php$/", $_SERVER['PHP_SELF']) && !$_SESSION['user'];
 }
 
+function groupBy(array $array, string $key) {
+    $out = [];
+    foreach($array as $value) {
+        $out[$value[$key]][] = $value;
+    }
+    return $out;
+}
+
 ?>
