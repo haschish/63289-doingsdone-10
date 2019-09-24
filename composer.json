@@ -1,0 +1,13 @@
+{
+    "name": "dmitry/63289-doingsdone-10",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dmitry Ryabinin",
+            "email": "haschish@gmail.com"
+        }
+    ],
+    "require": {
+        "swiftmailer/swiftmailer": "^6.0"
+    }
+}
