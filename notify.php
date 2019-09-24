@@ -33,6 +33,6 @@ foreach($tasksGroupByUser as $userTasks) {
 
     $message->setTo($email);
     $message->setBody($body);
-    $result = $mailer->send($message);
+    $sendResult = $mailer->send($message);
 }
 ?>
