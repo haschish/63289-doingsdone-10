@@ -44,30 +44,12 @@ function getPrepareStmt($link, $sql, $data = []) {
 }
 
 /**
- * Считает количество задач определенной категории
- *
- * @param array $tasks массив задач
- * @param string $category название категории
- *
- * @return int количество найденых задач
- */
-function countCategory($tasks, $category) {
-    $count = 0;
-    foreach($tasks as $task) {
-        if ($task['category'] == $category) {
-            $count++;
-        }
-    }
-    return $count;
-};
-
-/**
  * проверяет, существует ли в списке категория с идентификатором $id
  *
  * @param array $categories массив категорий
  * @param string $id идентификатор категории
  *
- * @return boolean
+ * @return bool
  */
 function hasCategory($categories, $id) {
     return in_array($id, array_column($categories, 'id'));
@@ -78,7 +60,7 @@ function hasCategory($categories, $id) {
  *
  * @param string $date дата в формате 'ДД.ММ.ГГГГ'
  *
- * @return boolean true если от $date до текущего системного времени осталось меньше чем 24 часа, иначе false
+ * @return bool true если от $date до текущего системного времени осталось меньше чем 24 часа, иначе false
  */
 function isLessThan24HoursLeft(string $date) {
     $timestamp = strtotime($date);
