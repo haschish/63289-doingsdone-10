@@ -17,17 +17,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $projects_ids = array_column($projects, 'id');
 
     $rules = [
-        'name' => function() {
+        'name' => function () {
             return validateFilled('name');
         },
-        'project' => function() use ($projects_ids) {
+        'project' => function () use ($projects_ids) {
             return implode('; ', array_filter([
                 validateFilled('project'),
                 validateCategory('project', $projects_ids)
             ]));
         },
-        'date' => function() {
-            if (empty($_POST['date'])) {
+        'date' => function () {
+            if (empty(getPostValue('date'))) {
                 return null;
             }
             return validateDate('date');
@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         insertTask($dbLink, [
             'user_id' => $user['id'],
-            'project_id' => $_POST['project'],
-            'name' => $_POST['name'],
+            'project_id' => getPostValue('project'),
+            'name' => getPostValue('name'),
             'file' => $filename,
             'date' => $_POST['date'] ?: null
         ]);

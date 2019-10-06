@@ -7,7 +7,8 @@ require_once('./db-init.php');
 // показывать или нет выполненные задачи
 $show_completed = getShowCompleted();
 $_SESSION['show_completed'] = $show_completed;
-$user = $_SESSION['user'];
+$user = getSessionValue('user');
+$content = '';
 
 if ($user) {
     $projects = getProjects($dbLink, $user['id']);

@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rules = [
         'name' => function() use ($projects_names) {
             return validateFilled('name')
-                ?? validateNotExist(mb_strtolower($_POST['name']), $projects_names);
+                ?? validateNotExist(mb_strtolower(getPostValue('name')), $projects_names);
         }
     ];
 
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($errors) == 0) {
         insertProject($dbLink, [
             'user_id' => $user['id'],
-            'name' => mb_strtolower($_POST['name'])
+            'name' => mb_strtolower(getPostValue('name'))
         ]);
         redirect('index.php');
 	}

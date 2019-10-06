@@ -29,8 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = findUserByEmail($dbLink, $_POST['email']);
         if (!$user) {
             $errors['email'] = 'Указанный email не найден';
-        } else if (!password_verify($_POST['password'], $user['password'])) {
+            $errors['account'] = true;
+        } else if (!password_verify(getPostValue('password'), $user['password'])) {
             $errors['password'] = 'Пароль неверен';
+            $errors['account'] = true;
         } else {
             $_SESSION['user'] = $user;
             redirect('index.php');

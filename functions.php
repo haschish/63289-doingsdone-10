@@ -1,49 +1,5 @@
 <?php
 /**
- * Создает подготовленное выражение на основе готового SQL запроса и переданных данных
- *
- * @param $link mysqli Ресурс соединения
- * @param $sql string SQL запрос с плейсхолдерами вместо значений
- * @param array $data Данные для вставки на место плейсхолдеров
- *
- * @return mysqli_stmt Подготовленное выражение
- */
-function getPrepareStmt($link, $sql, $data = []) {
-    $stmt = mysqli_prepare($link, $sql);
-
-    if ($data) {
-        $types = '';
-        $stmt_data = [];
-
-        foreach ($data as $value) {
-            $type = null;
-
-            if (is_int($value)) {
-                $type = 'i';
-            }
-            else if (is_string($value)) {
-                $type = 's';
-            }
-            else if (is_double($value)) {
-                $type = 'd';
-            }
-
-            if ($type) {
-                $types .= $type;
-                $stmt_data[] = $value;
-            }
-        }
-
-        $values = array_merge([$stmt, $types], $stmt_data);
-
-        $func = 'mysqli_stmt_bind_param';
-        $func(...$values);
-    }
-
-    return $stmt;
-}
-
-/**
  * проверяет, существует ли в списке категория с идентификатором $id
  *
  * @param array $categories массив категорий
@@ -89,10 +45,7 @@ function insertProject(mysqli $link, array $project) {
     $sql = 'INSERT INTO projects (user_id, name) VALUES (?, ?)';
     $stmt = mysqli_prepare($link, $sql);
     mysqli_stmt_bind_param($stmt, 'ss', $project['user_id'], $project['name']);
-    mysqli_stmt_execute($stmt);
-    if (mysqli_stmt_errno($stmt)) {
-        printErrorAndExit(mysqli_stmt_error($stmt));
-    }
+    mysqliExecuteOrPrintError($stmt);
 
     return mysqli_stmt_insert_id($stmt);
 }
@@ -134,10 +87,7 @@ function insertTask(mysqli $link, array $task) {
     $sql = 'INSERT INTO tasks (user_id, project_id, name, file, date) VALUES (?, ?, ?, ?, ?)';
     $stmt = mysqli_prepare($link, $sql);
     mysqli_stmt_bind_param($stmt, 'sssss', $task['user_id'], $task['project_id'], $task['name'], $task['file'], $task['date']);
-    mysqli_stmt_execute($stmt);
-    if (mysqli_stmt_errno($stmt)) {
-        printErrorAndExit(mysqli_stmt_error($stmt));
-    }
+    mysqliExecuteOrPrintError($stmt);
 
     return mysqli_stmt_insert_id($stmt);
 };
@@ -156,10 +106,7 @@ function insertUser(mysqli $link, array $user) {
     $sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
     $stmt = mysqli_prepare($link, $sql);
     mysqli_stmt_bind_param($stmt, 'sss', $user['name'], $user['email'], $user['password']);
-    mysqli_stmt_execute($stmt);
-    if (mysqli_stmt_errno($stmt)) {
-        printErrorAndExit(mysqli_stmt_error($stmt));
-    }
+    mysqliExecuteOrPrintError($stmt);
 
     return mysqli_stmt_insert_id($stmt);
 };
@@ -171,24 +118,35 @@ function insertUser(mysqli $link, array $user) {
  *
  * @return string $value значение из массива $_POST, либо пустая строка
  */
-function getPostValue($name = null) {
+function getPostValue($name = null): string {
     return $_POST[$name] ?? '';
-};
+}
 
 function getGetValue(string $name = ''): string {
     return $_GET[$name] ?? '';
 }
 
+function getSessionValue(string $name = '') {
+    return $_SESSION[$name] ?? null;
+}
+
 function getShowCompleted() {
     if (isset($_GET['show_completed'])) {
         return $_GET['show_completed'] == '1' ? 1 : 0;
-    } else {
-        return $_SESSION['show_completed'] ?? 0;
     }
+
+    return $_SESSION['show_completed'] ?? 0;
 }
 
 function getFilterValue() {
     return $_GET['filter'] ?? 'all';
+}
+
+function mysqliExecuteOrPrintError(mysqli_stmt $stmt) {
+    mysqli_stmt_execute($stmt);
+    if (mysqli_stmt_errno($stmt)) {
+        printErrorAndExit(mysqli_stmt_error($stmt));
+    }
 }
 
 function printErrorAndExit(string $message = '') {
@@ -197,19 +155,20 @@ function printErrorAndExit(string $message = '') {
 }
 
 function printLayoutAndExit(string $content = '', string $title = 'Дела в порядке') {
-    $header = include_template('main-header__side.php', ['user' => $_SESSION['user']]);
-    $result = include_template('layout.php', ['title' => $title, 'content' => $content, 'header' => $header, 'user' => $_SESSION['user']]);
+    $user = getSessionValue('user');
+    $header = include_template('main-header__side.php', ['user' => $user]);
+    $result = include_template('layout.php', ['title' => $title, 'content' => $content, 'header' => $header, 'user' => $user]);
     print($result);
     exit;
 }
 
-function redirect(string $url = 'index.php') {
+function redirect(string $url) {
     header("Location: $url");
     exit;
 }
 
 function validateFilled($name): ?string {
-    if (empty($_POST[$name])) {
+    if (empty(trim(getPostValue($name)))) {
         return "Это поле должно быть заполнено";
     }
 
@@ -217,7 +176,7 @@ function validateFilled($name): ?string {
 }
 
 function validateCategory(string $name, array $allowed_list): ?string {
-    if (!in_array($_POST[$name], $allowed_list)) {
+    if (!in_array(getPostValue($name), $allowed_list)) {
         return "Указана несуществующая категория";
     }
 
@@ -243,7 +202,7 @@ function validateDate(string $name): ?string {
 }
 
 function validateEmail(string $name): ?string {
-    if (!filter_var($_POST[$name], FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var(getPostValue($name), FILTER_VALIDATE_EMAIL)) {
         return 'E-mail введён некорректно';
     }
     return null;
@@ -258,7 +217,7 @@ function validateUniqueEmail(mysqli $dbLink, string $email): ?string {
 }
 
 function isIndexGuest() {
-    return preg_match("/index.php$/", $_SERVER['PHP_SELF']) && !$_SESSION['user'];
+    return preg_match("/index.php$/", $_SERVER['PHP_SELF']) && !getSessionValue('user');
 }
 
 function groupBy(array $array, string $key) {

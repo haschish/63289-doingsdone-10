@@ -31,6 +31,13 @@
         </div>
 
         <div class="form__row form__row--controls">
+        <?php if (count($errors)) :?>
+            <?php if ($errors['account']) : ?>
+                <p class="error-message">Вы ввели неверный email/пароль</p>
+            <?php else : ?>
+                <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>
+            <?php endif ?>
+        <?php endif ?>
         <input class="button" type="submit" name="" value="Войти">
         </div>
     </form>

@@ -22,7 +22,7 @@
         <?php $classname = isset($errors['project']) ? "form__input--error" : ""; ?>
         <select class="form__input form__input--select <?= $classname; ?>" name="project" id="project" value="<?= getPostValue('project'); ?>">
         <?php foreach ($projects as $project):?>
-            <option value="<?=$project['id']?>"><?=$project['name']?></option>
+            <option value="<?=$project['id']?>" <?= $project['id'] == getPostValue('project') ? 'selected' : '' ?>><?=$project['name']?></option>
         <?php endforeach?>
         </select>
         <?php if (isset($errors['project'])) :?>
