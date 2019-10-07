@@ -118,8 +118,8 @@ function insertUser(mysqli $link, array $user) {
  *
  * @return string $value значение из массива $_POST, либо пустая строка
  */
-function getPostValue($name = null): string {
-    return $_POST[$name] ?? '';
+function getPostValue($name = ''): string {
+    return isset($_POST[$name]) ? trim($_POST[$name]) : '';
 }
 
 function getGetValue(string $name = ''): string {
@@ -168,7 +168,7 @@ function redirect(string $url) {
 }
 
 function validateFilled($name): ?string {
-    if (empty(trim(getPostValue($name)))) {
+    if (empty(getPostValue($name))) {
         return "Это поле должно быть заполнено";
     }
 
@@ -192,9 +192,9 @@ function validateNotExist(string $needle, array $list): ?string {
 }
 
 function validateDate(string $name): ?string {
-    if (!preg_match("/^\d{4}\-\d{2}-\d{2}$/", $_POST[$name])) {
+    if (!preg_match("/^\d{4}\-\d{2}-\d{2}$/", getPostValue($name))) {
         return "Это поле должно быть датой в формате «ГГГГ-ММ-ДД»";
-    } else if (strtotime($_POST['date']) < strtotime('today')) {
+    } else if (strtotime(getPostValue($name)) < strtotime('today')) {
         return "Дата должна быть больше или равна текущей";
     }
 

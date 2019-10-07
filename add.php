@@ -4,7 +4,7 @@ require_once('./helpers.php');
 require_once('./functions.php');
 require_once('./db-init.php');
 
-$user = $_SESSION['user'];
+$user = getSessionValue('user');
 if (!$user) {
     redirect('index.php');
 }
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'project_id' => getPostValue('project'),
             'name' => getPostValue('name'),
             'file' => $filename,
-            'date' => $_POST['date'] ?: null
+            'date' => getPostValue('date') ?: null
         ]);
         redirect('index.php');
 	}

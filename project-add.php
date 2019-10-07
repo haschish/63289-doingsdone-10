@@ -4,7 +4,7 @@ require_once('./helpers.php');
 require_once('./functions.php');
 require_once('./db-init.php');
 
-$user = $_SESSION['user'];
+$user = getSessionValue('user');
 if (!$user) {
     redirect('index.php');
 }

@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rules = [
         'email' => function() use ($dbLink) {
             return validateEmail('email')
-                ?? validateUniqueEmail($dbLink, $_POST['email']);
+                ?? validateUniqueEmail($dbLink, getPostValue('email'));
         },
         'password' => function() {
             return validateFilled('password');
@@ -28,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (count($errors) == 0) {
         insertUser($dbLink, [
-            'name' => $_POST['name'],
-            'email' => $_POST['email'],
-            'password' => password_hash($_POST['password'], PASSWORD_DEFAULT)
+            'name' => getPostValue('name'),
+            'email' => getPostValue('email'),
+            'password' => password_hash(getPostValue('password'), PASSWORD_DEFAULT)
         ]);
         redirect('index.php');
 	}

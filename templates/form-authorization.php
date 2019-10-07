@@ -32,7 +32,7 @@
 
         <div class="form__row form__row--controls">
         <?php if (count($errors)) :?>
-            <?php if ($errors['account']) : ?>
+            <?php if (isset($errors['account'])) : ?>
                 <p class="error-message">Вы ввели неверный email/пароль</p>
             <?php else : ?>
                 <p class="error-message">Пожалуйста, исправьте ошибки в форме</p>

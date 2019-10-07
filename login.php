@@ -4,7 +4,7 @@ require_once('./helpers.php');
 require_once('./functions.php');
 require_once('./db-init.php');
 
-if ($_SESSION['user']) {
+if (getSessionValue('user')) {
     redirect('index.php');
 }
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $errors = array_filter($errors);
     if (count($errors) == 0) {
-        $user = findUserByEmail($dbLink, $_POST['email']);
+        $user = findUserByEmail($dbLink, getPostValue('email'));
         if (!$user) {
             $errors['email'] = 'Указанный email не найден';
             $errors['account'] = true;
